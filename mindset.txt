@@ -1,0 +1,21 @@
+
+For 2022 new start
+
+
+why I need to do this whole thing again, the truth is you cannot just do something for something,
+
+
+througth this time amamzon oa, I thought I was perfectly ready for any challenge, but the truth is you still are thinking using old way, doing the thing using old way, so the reuslt is same.
+
+
+I really need to take this channce to think deeper before next time I lost myself in the blindness confident.
+
+作者：吴师兄学算法
+链接：https://www.zhihu.com/question/379857231/answer/1093860307
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+一、战略上藐视算法题在战略上藐视算法题的目的是为了在心理层面上克服恐惧，事实上，不仅仅是算法题，诸如学习计算机基础、计算机网络、编译原理等程序员必备的知识时，有这个心态可以学起来事半功倍。我亲身经历过这样的改变。作为一个转行程序员，在转行学习编程的那段日子，没有人告诉我说要去学数据结构，也没有人告诉我说要去刷 LeetCode，都是靠自己一个人摸索，绝大部分的时间都花在具体项目上，误认为自己和那些已经工作的程序员的区别在于有没有做过项目。这就是科班出身和非科班出身的学生最大的区别，科班出身的学生知道去学什么，知道大学期间安排的每一门课程是干什么的，知道要先去做哪些小项目来循序渐进的编码练习，知道知识点在工作中能起到什么样的具体作用，非科班出身的程序员感觉计算机相关的知识点简直是一团乱麻。这种情况导致我去找工作参加面试的时候，很多基础面都通过不了，最后侥幸进入一家要求不太高的创业公司，薪资不高，为了进大厂必须完善算法和计算机的知识。因为未知，所以恐惧，恐惧导致盲目的崇拜，我认为那些科班出身的程序员太牛逼了，居然可以掌握那么多繁杂的计算机知识；那些写源码分析的程序员都是大神；那些写算法题解的程序员都是高手。恐惧把小的问题放大，比如学到单调栈、双向链表、记忆化的内容，一看到题目要用到这些概念便觉得代码很难写，索性那些内容就不看，所以学了大半年还在原地踏步，还在原来的公司拿着微薄的工资做着 CURD。
+
+
+
