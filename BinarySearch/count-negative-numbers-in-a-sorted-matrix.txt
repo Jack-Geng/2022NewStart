@@ -86,4 +86,44 @@ class Solution {
 
 这个思路也不对，那么按照我更新后的矩阵来说，是没有办法简单的apply 乘法的，那么column的排序信息真的是噪音么？？？？？
 
+算了 不纠结这个了
+
+但还是得有个问题得考虑下，边界情况
+如果第一个数字就是负数，那么基本就不用执行二分查找了，如果最后一个是正数，也不用执行二分查找
+
+class Solution {
+    public int countNegatives(int[][] grid) 
+    {
+        int res = 0;
+        for (int i = 0; i < grid.length; i++)
+        {
+            if(grid[i][0] < 0)
+            {
+                res += grid[i].length;
+                continue;
+            }
+            if(grid[i][grid[i].length - 1] > 0)
+                continue;
+                
+            int left = helperRow(grid[i]);
+            if ( left < grid[i].length)
+                res += grid[i].length - left;
+        }
+        return res;
+    }
+    
+    private int helperRow(int[] row)
+    {
+        int left = 0, right = row.length;
+        while(left < right)
+        {
+            int mid = left + (right - left) / 2;
+            if (row[mid] <= -1) //-1 is left-most, 0 is right-most
+                right = mid;
+            else
+                left = mid + 1;
+        }
+        return left;
+    }
+}
 
