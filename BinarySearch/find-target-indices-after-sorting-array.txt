@@ -1,0 +1,183 @@
+
+2089 https://leetcode.com/problems/find-target-indices-after-sorting-array/
+
+来思考下
+模拟：模拟题目的运行。
+规律：尝试总结出题目的一般规律和特点。
+匹配：找到符合这些特点的数据结构与算法。
+边界：考虑特殊情况
+
+模拟：模拟题目的运行。
+- 首先将数组排序
+- 然后遍历数组，如果数组值等于target，那么就把index放入到结果数组里面去。注意，数组是0-indexed
+
+规律：尝试总结出题目的一般规律和特点。
+N/A
+
+匹配：找到符合这些特点的数据结构与算法。
+- 排序算法，我们不用重新发明轮子
+-- Java中，对于primetive 数组，直接上Arrays.sort(), python里面有 nums.sort() 或者是 nums = sorted()
+- 数组遍历，我们就不用再细说了吧
+
+边界：考虑特殊情况
+这道题目，几乎没有边界问题
+
+class Solution {
+    public List<Integer> targetIndices(int[] nums, int target) 
+    {
+        Arrays.sort(nums);
+        List<Integer> result = new ArrayList<>();
+        
+        for(int i = 0; i < nums.length; i++)
+        {
+            if (nums[i] == target)
+                result.add(i);
+        }
+        return result;
+    }
+}
+
+那么这样的解法的空间和时间复杂度是多少呢？
+- 时间复杂度 - 排序需要O(NlogN)，然后遍历一次，需要O（N），所以总共的时间复杂度是O（NlogN + N）
+- 空间复杂度 - 空间复杂度，我们怎么也得构造结果数组，所以，我不认为这道题目有空间复杂度（额外的空间复杂度），非要说的话，那就是O（N）
+
+那么排完序了，再次进行思考，既然都是已经排好序的数组了，我们还要从头遍历到尾部么， 数据量小的情况下，我们当然可以这么做，数据量大的话，岂不是很慢。
+
+wait，排好序的数组，找到某个值，难道不就是二分查找的领域么，来试试
+- 时间复杂度就变成了 O（NlogN） + O（logN）
+
+再次进行思考，这里面不止有一个target，那么你要怎么做，这种情况下，我们应该找到target在数组里面的最左边的值，然后从那个index sice开始，如果value不等于target，我们就停止
+
+oh no，甚至上面的解法不用二分查找也可以有改进的空间，都已经排好序了，我们只需要维护一个find，if find = True，那么value 不等于 target，我们就应该停止
+
+class Solution {
+    public List<Integer> targetIndices(int[] nums, int target) 
+    {
+        Arrays.sort(nums);
+        List<Integer> result = new ArrayList<>();
+        
+        boolean find = false;
+        
+        for(int i = 0; i < nums.length; i++)
+        {
+            if (nums[i] == target)
+            {
+                find = true;
+                result.add(i);
+            }
+            if (find && nums[i] != target)
+            {
+                return result;
+            }
+        }
+        return result;
+    }
+}
+
+这样写，似乎也没有跑的很快，还是得二分查找
+
+class Solution {
+    public List<Integer> targetIndices(int[] nums, int target) 
+    {
+        Arrays.sort(nums);
+        List<Integer> result = new ArrayList<>();
+        
+        int left = 0, right = nums.length;
+        while (left < right)
+        {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) // it means the secion will go to right
+            {
+                left = mid + 1;
+            }
+            else
+            {
+                right = mid; //if mid == target, right cannot be mid - 1, because mid is still a candidate
+            }
+        }
+        
+        for (int i = left; i < nums.length; i++)
+        {
+            if (nums[i] != target)
+                break;
+            result.add(i);
+        }
+        return result;
+    }
+}
+
+怎么回事，leetcode还是显示要4ms，还不是最优解法
+
+----
+但注意看我刚刚在做题中的一个bug，left <= right，显然是二分搜索的解法不够准确，导致了几次timeout，需要引起注意
+
+还有改进空间么？？？？？
+
+找到最左边的一个index == target了，那么能不能找到最右边一个target的位置呢，这样我们就可以直接，但。。。。。这样还是得一个个把index放到数组里去啊，能节省时间么，或许? 这样我们就不用重复的比较了
+
+来试试
+class Solution {
+    public List<Integer> targetIndices(int[] nums, int target) 
+    {
+        Arrays.sort(nums);
+        List<Integer> result = new ArrayList<>();
+        
+        int left = 0, right = nums.length;
+        while (left < right)
+        {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) // it means the secion will go to right
+            {
+                left = mid + 1;
+            }
+            else
+            {
+                right = mid; //if mid == target, right cannot be mid - 1, because mid is still a candidate
+            }
+        }
+        
+        //left location remain same, but right location need to be re-caculated
+        int tleft = left;
+        right = nums.length;
+        while(tleft < right)
+        {
+            int mid = tleft + (right - tleft) / 2;
+            if (nums[mid] <= target)
+                tleft = mid + 1;
+            else
+                right = mid;
+        }
+        
+        for (int i = left; i < right; i++)
+        {
+            result.add(i);
+        }
+        return result;
+    }
+}
+
+奇了怪了，这样也不成，反而更慢了，什么原因呢？
+
+
+oh shit，看到别人的一个解法，不用sort，不用二分查找，不用寻找左边，寻找右边，这样解题的思路在于哪里呢？？
+
+我们只是想要找到所有target的index，但是我们真的不care其他的index到底是什么样的，所以我只需要找到第一个target的位置，就可以确定我的起始位置，寻找左边，寻找右边，其实是over-thinking
+
+但，真需要注意到是，二分查找左边，然后遍历，这是基本思路，而不是奇淫技巧
+
+class Solution {
+    public List<Integer> targetIndices(int[] nums, int target) 
+    {
+        int count = 0, lessthan = 0;
+        for (int n : nums) {
+            if (n == target) count++;
+            if (n < target) lessthan++;
+        }
+        
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            result.add(lessthan++);
+        }
+        return result;
+    }
+}
