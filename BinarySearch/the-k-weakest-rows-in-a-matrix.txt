@@ -52,4 +52,16 @@ class Solution(object):
 
 问题其实抛出来了，我们真的需要自定义函数么，通常情况下，如果不用自定义函数，那么就得对原始数据进行组合拼接，让其可以被当成是一个可以被比较的value
 
-1 最多有100个，那么
+1 最多有100个，那么，我们可以这么做 用前置0来填充，那么我有点忘记了，是怎么做在python，%3d么
+class Solution(object):
+    def kWeakestRows(self, mat, k):
+        """
+        :type mat: List[List[int]]
+        :type k: int
+        :rtype: List[int]
+        """
+        res = [str(sum(mat[i])).zfill(3) + str(i).zfill(3) for i in range(len(mat))]
+        res.sort()
+        return [int(res[i][-3:]) for i in range(k)]
+
+去他妈的sring.format, str.zfill 完美解决问题，所以现在放入res的格式类似于这样的 001002 100099 所以基于str的排序就可以完美的解决了，就不用自定义比较函数了，这似乎是通用的方法
