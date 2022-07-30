@@ -30,17 +30,8 @@ class Solution(object):
                     return self.x[0] - y.x[0]
                 else:
                     return self.x[1] - y.x[1]
-        
-        res = []
-        for i in range(len(mat)):
-            temp = 0
-            for j in range(len(mat[i])):
-                if mat[i][j] == 1:
-                    temp += 1
-                else:
-                    break
-            res.append((temp, i))
-        
+    
+        res = [(sum(mat[i]), i) for i in range(len(mat))]
         res.sort(key = comp)
         
         return [res[i][1] for i in range(k)]
@@ -48,3 +39,17 @@ class Solution(object):
 首先基于Python来说，这里借用了几个Python独有的概念
 - 元组tuple, 当然Java里面你可以构造一个list来处理它，自然不如元组这么容易
 - 自定义比较函数，这个现在你应该会比较写了吧
+
+那么这样的解法时间和空间复杂度是多少呢
+- 时间复杂度， 遍历数组统计需要O（N）+ 排序需要O（logN）
+- 空间复杂度呢，需要一个临时的数组作为排序的基础，O（2 * N）N == len（mat）
+
+那么有没有更好的解决思路呢
+
+最小的前几个，你想到了什么？？？堆排序！！！，是不是？？那么算法可以改成什么呢？
+
+但是heapq在python里不支持自定义比较函数，那么我们要怎么做呢？？？
+
+问题其实抛出来了，我们真的需要自定义函数么，通常情况下，如果不用自定义函数，那么就得对原始数据进行组合拼接，让其可以被当成是一个可以被比较的value
+
+1 最多有100个，那么
