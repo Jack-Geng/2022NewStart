@@ -65,3 +65,86 @@ class Solution(object):
         return [int(res[i][-3:]) for i in range(k)]
 
 去他妈的sring.format, str.zfill 完美解决问题，所以现在放入res的格式类似于这样的 001002 100099 所以基于str的排序就可以完美的解决了，就不用自定义比较函数了，这似乎是通用的方法
+
+那么你都这么做了，不需要自定义比较函数了，那么队排序似乎就变的可行
+
+wait，对于1的统计我们的时间复杂度是O（N），有没有可能再优化一点，11110000 其实是已经排好序的数组，二分查找知道最右边的1，比如最右边的1index是3的话，那么sum就是3，你看，这就是找到1的right-most插入index的问题，继续优化
+
+class Solution(object):
+    def kWeakestRows(self, mat, k):
+        """
+        :type mat: List[List[int]]
+        :type k: int
+        :rtype: List[int]
+        """
+        def helper(nums, num): # find num right-most insert pos in nums
+            left, right = 0, len(nums)
+            while left < right:
+                mid = left + (right - left) / 2
+                if nums[mid] == num:
+                    left = mid + 1
+                else:
+                    right = mid
+            return left
+        
+        res = []
+        for i in range(len(mat)):
+            res.append(str(helper(mat[i], 1)).zfill(3) + str(i).zfill(3))
+        res.sort()
+        return [int(res[i][-3:])for i in range(k)]
+
+Ok,现在来计算时间和空间复杂度，对于以前sum取1的时间复杂度是O（N），因为要遍历一次数组，但是现在就变成了O（logN），因为是二分查找
+
+空间复杂度呢，因为需要存放运算结果，所以是 O（N）
+
+后面的排序又是一个O（logN），所以，O（logN）* 2
+
+这里面有一个需要注意到的情况是1111100000 不是递增序列，所以二分查找要注意
+
+你看倒叙找right-most 是不是就类似 正序找left-most呢，所以你的写法是对的么？？？？
+
+这个时候换Java来写下呢。试试呗, 首先得承认，这个有参考别人的写法，那么技巧在哪里呢？？
+
+这里有几个关键点，Java里面的优先queue，priorityQueue 默认是最小queue，什么意思呢？
+
+就是说当元素进入PQ后，执行poll操作，结果是最小的那个。这个跟Python里面的heapq一样
+
+class Solution {
+    public int[] kWeakestRows(int[][] mat, int k) 
+    {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] != b[0] ? b[0] - a[0] : b[1] - a[1]); 最小pq变成最大pq，小窍门在于 b - a，而不是a - b
+        for(int i = 0; i < mat.length; i++)
+        {
+            pq.offer(new int[]{helper(mat[i], 1), i});
+            if (pq.size() > k) --- 把大的poll出去，保留k个最小的
+            {
+                pq.poll();   
+            }
+        }
+        int[] res = new int[k];
+        while(k > 0)
+        {
+            res[--k] = pq.poll()[1];   -- 注意，这里的poll还是由大到小，所以k才会k--对数组元素倒着插入
+        }
+        return res;
+    }
+    private int helper(int[] nums, int target)
+    {
+        int left = 0, right = nums.length;
+        while(left < right)
+        {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target)
+                left = mid + 1;
+            else
+                right = mid; 
+        }
+        return left;
+    }
+}
+
+python的PQ自定义呢, 读了好多评论，Java里的PriorityQueue其实也是wrap了一个heap，所以Python里给了你纯heap，不提供自定义比较函数也说的过去，毕竟名字就在那里摆着呢，heap sort， heap sort
+https://stackoverflow.com/questions/8875706/heapq-with-custom-compare-predicate
+
+所以呢，用heap的时间和空间复杂度又是多少呢？？
+- 时间复杂度，O（NlogN）+ O（N）
