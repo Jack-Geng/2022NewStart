@@ -1,0 +1,68 @@
+
+268 missing-number
+https://leetcode.com/problems/missing-number/
+
+来思考下
+模拟：模拟题目的运行。
+规律：尝试总结出题目的一般规律和特点。
+匹配：找到符合这些特点的数据结构与算法。
+边界：考虑特殊情况
+
+模拟：模拟题目的运行。
+给了一个数组，比如说 0，1，3 期待 【0, N】的数字都在，找到缺失的哪一个。
+
+期待结果 0，1，2，3 长度是len（nums） + 1
+
+最直观的算法是暴力，从0 - N，一个个来检测到底在不在数组里，这样算法时间复杂度是O（N * N），空间复杂度是O（1）
+
+class Solution(object):
+    def missingNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        for i in range(len(nums) + 1):
+            if i not in nums:
+                return i
+
+显然不是最优, nums的排序需要O（NlogN），然后N * logN 做N个二分查找logN，所以就是O（2 * N * logN）
+class Solution(object):
+    def missingNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        nums.sort()
+        for i in range(len(nums) + 1):
+            if not self.helper(nums, i):
+                return i
+        return -1
+    
+    def helper(self, nums, target):
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = left + (right - left) / 2
+            if nums[mid] == target:
+                return True
+            elif nums[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        
+        return False
+
+所以我们来讨论下 O(N * N) 比 O（N * logN）差很多么, 在数量级只有不多于100的情况下，N * N 表现要好于 NlogN。但是随着数量级的增长，NlogN就远好于N * N了。
+
+当然了这道题目本身就是很多解法的那种类型，我们这里用等差公式求和，来算出来一个sum，然后和数组本身的sum做减法，就可以知道少了哪个value，这样的时间复杂度就是O（N）
+
+有点忘记了，公式是什么来着, 这样算起来最快，但是需要一点数学知识，但凭良心话，这点数学知识是应该要的
+N * (A0 +  AN) / 2, len（nums）+ 1 是N， 由于是0 index，所以n - 1是最后一个数字
+class Solution(object):
+    def missingNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        n = len(nums) + 1
+        ssum = n * (0 + n - 1) / 2
+        return ssum - sum(nums)
