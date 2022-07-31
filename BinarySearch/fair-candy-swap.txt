@@ -7,3 +7,44 @@ fair-candy-swap
 规律：尝试总结出题目的一般规律和特点。
 匹配：找到符合这些特点的数据结构与算法。
 边界：考虑特殊情况
+
+class Solution {
+    public int[] fairCandySwap(int[] a, int[] b) 
+    {
+        int suma = 0;
+        int sumb = 0;
+        
+        for(int aa : a) suma += aa;
+        for(int bb : b) sumb += bb;
+        
+        Arrays.sort(b);
+        
+        for (int i = 0; i < a.length; i++)
+        {
+            int idx = find(b, a[i] + (sumb - suma) / 2);
+            if(idx != -1)
+                return new int[]{a[i], b[idx]};
+        }
+        return new int[]{-1, -1};        
+    }
+    
+    private int find(int[] nums, int target)
+    {
+        int left = 0, right = nums.length - 1;
+        while(left <= right)
+        {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target)
+                return mid;
+            else if (nums[mid] > target)
+                right = mid - 1;
+            else
+                left = mid + 1;
+        }
+        return -1;
+    }
+}
+
+你看这道题目，你大概知道要怎么做，怎么就没有把思路和公式写下来呢，写写comment，基本的x y f(x), f(y)也可以帮助你理解思路不是，然后就不是这么很愚蠢地在写各种if else，就算是负数又如何，负数也照样符合二分查找的算法啊
+
+记住，记住，写下来
